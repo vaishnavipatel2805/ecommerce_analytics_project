@@ -16,3 +16,6 @@ data/raw/*.csv
 
 # Power BI temp files
 *.pbix.lock
+
+# raw datset files
+Datasets/Raw/
