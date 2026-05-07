@@ -1,0 +1,18 @@
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+
+# OS files
+.DS_Store
+
+# Large data files (optional)
+data/raw/*.csv
+
+# Power BI temp files
+*.pbix.lock
