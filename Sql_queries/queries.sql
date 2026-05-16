@@ -86,3 +86,75 @@ FROM final_data
 WHERE delivery_days IS NOT NULL
 
 GROUP BY price_category;
+
+-- Freight Cost Analysis
+SELECT 
+    ROUND(AVG(freight_value), 2) AS avg_freight,
+    ROUND(AVG(price), 2) AS avg_product_price
+FROM final_data;
+
+-- State vs Revenue vs Avg Delivery Days
+SELECT 
+    customer_state,
+    ROUND(SUM(total_price), 2) AS Revenue,
+    ROUND(AVG(delivery_days), 2) AS avg_delivery_days,
+    COUNT(DISTINCT order_id) AS total_orders
+FROM final_data
+GROUP BY customer_state
+ORDER BY Revenue DESC
+LIMIT 10;
+
+-- Repeat Customer Analysis
+WITH total_orders AS(
+                    SELECT 
+                        customer_unique_id ,
+                        COUNT(DISTINCT(order_id)) AS orders
+                        FROM final_data
+                        GROUP BY customer_unique_id
+                            
+)
+SELECT 
+    CASE 
+        WHEN orders = 1 
+        THEN "One time customer"
+        ELSE "Repeat customer"
+    END AS customer_type,
+    COUNT(*) AS total_customers
+FROM total_orders
+GROUP BY customer_type
+
+-- Customer Lifetime Value (CLV)
+WITH order_value AS (
+
+    SELECT 
+        order_id,
+        customer_unique_id,
+        MAX(total_price) AS order_total
+    FROM final_data
+    WHERE total_price IS NOT NULL
+    GROUP BY order_id, customer_unique_id
+)
+
+SELECT 
+    customer_unique_id,
+    COUNT(order_id) AS total_orders,
+    ROUND(SUM(order_total), 2) AS customer_lifetime_value,
+    ROUND(AVG(order_total), 2) AS avg_order_value
+FROM order_value
+GROUP BY customer_unique_id
+ORDER BY customer_lifetime_value DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
